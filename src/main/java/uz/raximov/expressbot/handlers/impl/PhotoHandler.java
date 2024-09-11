@@ -11,13 +11,14 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import uz.raximov.expressbot.bot.Data;
 import uz.raximov.expressbot.commands.Actions;
 import uz.raximov.expressbot.commands.impl.GeneralCommand;
+import uz.raximov.expressbot.commands.impl.GlobalRequestCommand;
 import uz.raximov.expressbot.dto.ClientActionDto;
 import uz.raximov.expressbot.dto.ClientDto;
+import uz.raximov.expressbot.entity.Client;
 import uz.raximov.expressbot.entity.FileEntity;
+import uz.raximov.expressbot.entity.Order;
 import uz.raximov.expressbot.handlers.Handler;
-import uz.raximov.expressbot.service.ClientActionService;
-import uz.raximov.expressbot.service.ClientService;
-import uz.raximov.expressbot.service.TelegramService;
+import uz.raximov.expressbot.service.*;
 
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
@@ -25,7 +26,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Service
@@ -34,30 +34,40 @@ public class PhotoHandler implements Handler<Message> {
 
     private final GeneralCommand generalCommand;
 
+    private final GlobalRequestCommand globalRequestCommand;
+
     private final ClientActionService clientActionService;
 
     private final ClientService clientService;
 
     private final TelegramService telegramService;
 
+    private final FileService fileService;
+
+    private final OrderService orderService;
+
     @Override
     public void handle(Message message) {
         boolean isAdmin = true;
         if (message.getFrom() != null) {
-            ClientDto client = clientService.findClientByUserId(message.getFrom().getId());
+            Client client = clientService.findClientByTelegramId(message.getFrom().getId());
             ClientActionDto action = clientActionService.findLastActionByChatId(message.getChatId());
             if (action.getAction().equals(Actions.REQUEST_ORDER_PHOTO_ACTION)) {
                 if (client != null) {
                     try {
-                        log.info("Fayl muvaffaqiyatli yuklandi !");
+                        orderService.saveOrder(new Order(message.getChatId(),client,client.getId(),savePhotoMessageToFile(message)));
+                        clientActionService.saveAction(Actions.REQUEST_ORDER_COUNT_ACTION, message.getChatId(), client.getId());
+                        globalRequestCommand.execute(message.getChatId(),"\uD83D\uDED2 Buyurtma soni:",null,isAdmin);
+                        log.info("Buyurtmada muvaffaqiyatli yaratildi !");
                     }catch (Exception e){
-                        log.error("Fayl yuklashda xatolik yuzaga keldi !");
+                        log.error("Buyurtmada xatolik yuzaga keldi !");
                     }
                     return;
                 }
             }
+        }else{
+            generalCommand.execute(message.getChatId(),true);
         }
-        generalCommand.execute(message.getChatId(),true);
     }
 
 
@@ -105,8 +115,7 @@ public class PhotoHandler implements Handler<Message> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new FileEntity();
-//        return webPanelMessageService.saveFile(fileEntity);
+        return fileService.saveFile(fileEntity);
     }
 }
 

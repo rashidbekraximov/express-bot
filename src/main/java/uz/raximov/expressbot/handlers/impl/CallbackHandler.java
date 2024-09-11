@@ -6,9 +6,12 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import uz.raximov.expressbot.commands.Actions;
+import uz.raximov.expressbot.commands.impl.Commands;
 import uz.raximov.expressbot.commands.impl.admin.AdminCommand;
 import uz.raximov.expressbot.commands.impl.admin.AssignAdminCommand;
 import uz.raximov.expressbot.dto.ClientDto;
+import uz.raximov.expressbot.dto.MessageEdit;
+import uz.raximov.expressbot.dto.MessageSend;
 import uz.raximov.expressbot.handlers.Handler;
 import uz.raximov.expressbot.service.ClientActionService;
 import uz.raximov.expressbot.service.ClientService;
@@ -53,6 +56,24 @@ class CallbackHandler implements Handler<CallbackQuery> {
                 assignAdminCommand.execute(chatId, data.replace("action:admin_ha_",""), "",isAdmin);
             }else{
                 adminCommand.execute(chatId,isAdmin);
+            }
+        }else if (data.startsWith(Actions.REQUEST_ORDER_STATUS_ACTION)) {
+            clientActionService.saveAction(Actions.REQUEST_ORDER_CONFIRM_ACTION, chatId, client.getId());
+            String caption = "";
+            if (data.replace(Actions.REQUEST_ORDER_STATUS_ACTION,"").startsWith("_ha")){
+                caption = "<strong>\uD83D\uDD30 Status: ✅ To'langan</strong>";
+            }else{
+                caption = "<strong>\uD83D\uDD30 Status: ❌ To'lanmagan</strong>";
+            }
+            telegramService.editMessageText(new MessageEdit(
+                    chatId,messageId, caption));
+            telegramService.sendMessage(new MessageSend(chatId,
+                    "Shularni tasdiqlaysizmi !",
+                    Commands.createCatalogInlineKeyboardConfirm(Actions.REQUEST_ORDER_CONFIRM_ACTION)));
+        }else if (data.startsWith(Actions.REQUEST_ORDER_CONFIRM_ACTION)) {
+            clientActionService.saveAction(Actions.ADMIN, chatId, client.getId());
+            if (data.replace(Actions.REQUEST_ORDER_CONFIRM_ACTION,"").startsWith("_ha")){
+            }else{
             }
         }
     }

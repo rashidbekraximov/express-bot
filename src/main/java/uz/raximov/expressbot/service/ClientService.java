@@ -39,6 +39,17 @@ public class ClientService {
         }
     }
 
+    public Client findClientByTelegramId(Long userId) {
+        Optional<Client> clientEntityOptional = clientRepository.findByTelegramId(userId.toString());
+        if (clientEntityOptional.isPresent()){
+            logger.info("Klient USERID =>" + userId + " bo'lgan client ma'lumotlari olindi !");
+            return clientEntityOptional.get();
+        }else{
+            logger.warn("Klient USERID =>" + userId + " bo'lgan client ma'lumotlari topilmadi !");
+            return null;
+        }
+    }
+
     public ClientDto makeAdmin(Long userId) {
         Optional<Client> clientEntityOptional = clientRepository.findByTelegramId(userId.toString());
         if (clientEntityOptional.isPresent()) {

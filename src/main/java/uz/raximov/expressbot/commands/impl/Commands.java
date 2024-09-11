@@ -1,12 +1,15 @@
 package uz.raximov.expressbot.commands.impl;
 
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 import uz.raximov.expressbot.util.KeyboardUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -28,6 +31,30 @@ public final class Commands {
                 add("⬅ Orqaga");
             }});
         }});
+    }
+
+    public static InlineKeyboardMarkup createCatalogInlineKeyboard(String action) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+        inlineKeyboardButton1.setCallbackData(action + "_ha");
+        inlineKeyboardButton1.setText("✅ To'langan");
+        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton();
+        inlineKeyboardButton2.setCallbackData(action + "_yo'q");
+        inlineKeyboardButton2.setText("❌ To'lanmagan");
+        inlineKeyboardMarkup.setKeyboard(List.of(List.of(inlineKeyboardButton1,inlineKeyboardButton2)));
+        return inlineKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup createCatalogInlineKeyboardConfirm(String action) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
+        inlineKeyboardButton1.setCallbackData(action + "_ha");
+        inlineKeyboardButton1.setText("✅ Ha");
+        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton();
+        inlineKeyboardButton2.setCallbackData(action + "_yo'q");
+        inlineKeyboardButton2.setText("❌ Yo'q");
+        inlineKeyboardMarkup.setKeyboard(List.of(List.of(inlineKeyboardButton1,inlineKeyboardButton2)));
+        return inlineKeyboardMarkup;
     }
 
     public static ReplyKeyboardMarkup createLanguageKeyboard() {

@@ -21,12 +21,19 @@ public class UpdateHandler implements Handler<Update> {
 
     private final MessageHandler messageHandler;
 
+    private final PhotoHandler photoHandler;
+
     private final CallbackHandler callbackHandler;
 
     @Override
     public void handle(Update update) {
         if (update.hasMessage()) {
-            messageHandler.handle(update.getMessage());
+            Message message = update.getMessage();
+            if (message.hasText()){
+                messageHandler.handle(update.getMessage());
+            }else if (message.hasPhoto()){
+                photoHandler.handle(message);
+            }
         } else if (update.hasCallbackQuery()) {
             callbackHandler.handle(update.getCallbackQuery());
         }

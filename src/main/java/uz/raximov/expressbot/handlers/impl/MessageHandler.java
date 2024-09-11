@@ -11,6 +11,7 @@ import uz.raximov.expressbot.commands.impl.StartCommand;
 import uz.raximov.expressbot.commands.impl.admin.AdminCommand;
 import uz.raximov.expressbot.commands.impl.admin.LoadUserListToExcelCommand;
 import uz.raximov.expressbot.commands.impl.admin.RequestPhoneNumberCommand;
+import uz.raximov.expressbot.commands.impl.order.RequestPhotoCommand;
 import uz.raximov.expressbot.dto.ClientActionDto;
 import uz.raximov.expressbot.dto.ClientDto;
 import uz.raximov.expressbot.handlers.Handler;
@@ -37,6 +38,8 @@ class MessageHandler implements Handler<Message> {
 
     private final RequestPhoneNumberCommand requestPhoneNumberCommand;
 
+    private final RequestPhotoCommand requestPhotoCommand;
+
 //    private final InfoCommand infoCommand;
 
     @Override
@@ -48,9 +51,8 @@ class MessageHandler implements Handler<Message> {
         ClientDto client = null;
         if (message.getFrom() != null) {
             client = clientService.findClientByUserId(message.getFrom().getId());
-            isAdmin = client.isAdmin();
+            isAdmin = client != null && client.isAdmin();
         }
-
 
 //      TODO Entities Command handler
         if (text.startsWith(Commands.START_COMMAND)) {
@@ -69,11 +71,17 @@ class MessageHandler implements Handler<Message> {
             return;
         }
 
-
         //TODO Admin handler
         if (text.equals("\uD83D\uDC68\uD83C\uDFFB\u200D\uD83D\uDCBB Admin")) {
             clientActionService.saveAction(Actions.ADMIN, chatId, client.getId());
             adminCommand.execute(chatId,isAdmin);
+            return;
+        }
+
+        //TODO Add Order
+        if (text.equals("\uD83D\uDECD Buyurtma qo'shish")) {
+            clientActionService.saveAction(Actions.REQUEST_ORDER_PHOTO_ACTION, chatId, client.getId());
+            requestPhotoCommand.execute(chatId,isAdmin);
             return;
         }
 

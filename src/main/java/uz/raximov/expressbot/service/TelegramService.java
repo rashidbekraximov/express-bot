@@ -6,11 +6,13 @@ import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.raximov.expressbot.bot.Data;
 import uz.raximov.expressbot.dto.DocumentSend;
+import uz.raximov.expressbot.dto.MessageEdit;
 import uz.raximov.expressbot.dto.MessageSend;
 import uz.raximov.expressbot.exception.FailedSendMessageException;
 
@@ -58,6 +60,26 @@ public class TelegramService extends DefaultAbsSender {
             return execute(document);
         } catch (TelegramApiException e) {
             throw new FailedSendMessageException(String.format("Failed send text message %s", document), e);
+        }
+    }
+
+    public void editMessageText(MessageEdit message) {
+        EditMessageText editMessageText = new EditMessageText();
+        if (message.getMessageId() != null) {
+            editMessageText.setChatId(message.getChatId());
+            editMessageText.setMessageId(message.getMessageId());
+        } else {
+            editMessageText.setInlineMessageId(message.getInlineMessageId());
+        }
+        editMessageText.setText(message.getText());
+        editMessageText.setParseMode("HTML");
+        if (message.getKeyboard() != null) {
+            editMessageText.setReplyMarkup(message.getKeyboard());
+        }
+        try {
+            execute(editMessageText);
+        } catch (TelegramApiException e) {
+            throw new FailedSendMessageException(String.format("Failed edit text message %s", message), e);
         }
     }
 }
