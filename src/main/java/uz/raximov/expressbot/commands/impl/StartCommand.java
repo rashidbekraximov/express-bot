@@ -18,7 +18,7 @@ public class StartCommand implements Command<Long> {
 
     @Override
     public void execute(Long chatId ,Boolean isAdmin) {
-            telegramService.sendMessage(new MessageSend(chatId, "hI", generalCommand.createGeneralMenuKeyboard(isAdmin)));
+            telegramService.sendMessage(new MessageSend(chatId, "hI", generalCommand.createGeneralMenuKeyboard(isAdmin))); // TODO Iwo'daki hI neda iwlatilib durtti
     }
 }
 

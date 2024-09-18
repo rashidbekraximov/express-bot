@@ -3,20 +3,13 @@ package uz.raximov.expressbot.commands.impl.admin;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import uz.raximov.expressbot.commands.CollectorCommand;
-import uz.raximov.expressbot.commands.Command;
 import uz.raximov.expressbot.dto.ClientDto;
 import uz.raximov.expressbot.dto.MessageSend;
 import uz.raximov.expressbot.service.ClientService;
 import uz.raximov.expressbot.service.TelegramService;
-import uz.raximov.expressbot.util.KeyboardUtils;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class CheckUserCommand implements CollectorCommand<Long> {

@@ -7,10 +7,7 @@ import uz.raximov.expressbot.commands.Actions;
 import uz.raximov.expressbot.commands.impl.BackCommand;
 import uz.raximov.expressbot.commands.impl.Commands;
 import uz.raximov.expressbot.commands.impl.GeneralCommand;
-import uz.raximov.expressbot.commands.impl.StartCommand;
-import uz.raximov.expressbot.commands.impl.admin.AdminCommand;
-import uz.raximov.expressbot.commands.impl.admin.LoadUserListToExcelCommand;
-import uz.raximov.expressbot.commands.impl.admin.RequestPhoneNumberCommand;
+import uz.raximov.expressbot.commands.impl.admin.*;
 import uz.raximov.expressbot.commands.impl.order.RequestPhotoCommand;
 import uz.raximov.expressbot.dto.ClientActionDto;
 import uz.raximov.expressbot.dto.ClientDto;
@@ -39,6 +36,9 @@ class MessageHandler implements Handler<Message> {
     private final RequestPhoneNumberCommand requestPhoneNumberCommand;
 
     private final RequestPhotoCommand requestPhotoCommand;
+
+
+    private final RequestAdminIdCommand requestAdminIdCommand;
 
 //    private final InfoCommand infoCommand;
 
@@ -96,6 +96,13 @@ class MessageHandler implements Handler<Message> {
         if (text.equals("➕ Admin qo'shish")) {
             clientActionService.saveAction(Actions.ADD_ADMIN, chatId, client.getId());
             requestPhoneNumberCommand.execute(chatId,isAdmin);
+            return;
+        }
+
+        //TODO Admin List handler
+        if (text.equals("\uD83D\uDCC1 Adminlar ro'yxati")) {
+            clientActionService.saveAction(Actions.REQUEST_ADMIN_ID, chatId, client.getId());
+            requestAdminIdCommand.execute(chatId, isAdmin);
             return;
         }
 

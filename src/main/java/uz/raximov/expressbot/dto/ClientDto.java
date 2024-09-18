@@ -39,6 +39,8 @@ public class ClientDto extends BaseDto {
 
     private boolean isAdmin;
 
+    private String grantAdmin;
+
     public Client getDto() {
         Client client = new Client();
         BeanUtils.copyProperties(this, client);

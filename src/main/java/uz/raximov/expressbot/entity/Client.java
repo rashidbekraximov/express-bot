@@ -56,6 +56,9 @@ public class Client {
     @Column(name = "isAdmin", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isAdmin;
 
+    @Column(name = "grantAdmin")
+    private String grantAdmin;
+
     @Column(name = "createDate",columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private LocalDateTime createDate = LocalDateTime.now();
 

@@ -1,7 +1,6 @@
 package uz.raximov.expressbot.service;
 
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import uz.raximov.expressbot.repository.ClientRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +39,7 @@ public class ClientService {
 
     public Client findClientByTelegramId(Long userId) {
         Optional<Client> clientEntityOptional = clientRepository.findByTelegramId(userId.toString());
-        if (clientEntityOptional.isPresent()){
+        if (clientEntityOptional.map(Client::getDto).isPresent()){
             logger.info("Klient USERID =>" + userId + " bo'lgan client ma'lumotlari olindi !");
             return clientEntityOptional.get();
         }else{
@@ -50,10 +48,11 @@ public class ClientService {
         }
     }
 
-    public ClientDto makeAdmin(Long userId) {
+    public ClientDto makeAdmin(Long userId, Long chatId) {
         Optional<Client> clientEntityOptional = clientRepository.findByTelegramId(userId.toString());
         if (clientEntityOptional.isPresent()) {
             clientEntityOptional.get().setAdmin(true);
+            clientEntityOptional.get().setGrantAdmin(String.valueOf(chatId));
             try {
                 logger.info("Klient ID = > " + clientEntityOptional.get().getTelegramId() + " admin qilib tayinlandi !");
                 return clientRepository.save(clientEntityOptional.get()).getDto();
@@ -66,6 +65,23 @@ public class ClientService {
         }
     }
 
+    public ClientDto deleteAdmin(String userId, Boolean isAdmin){
+        Optional<Client> clientEntityOptional = clientRepository.findByIdAndIsAdmin(userId, isAdmin);
+        if (clientEntityOptional.isPresent()) {
+            clientEntityOptional.get().setAdmin(false);
+            try {
+                logger.info("Klient ID = > " + clientEntityOptional.get().getTelegramId() + " adminlikdan o'chirildi !");
+                return clientRepository.save(clientEntityOptional.get()).getDto();
+            } catch (Exception e) {
+                logger.error("Klient ID = " + clientEntityOptional.get().getTelegramId() + " adminlikdan o'chirishda xatolik yuzaga keldi !");
+                return null;
+            }
+        } else {
+            return null;
+        }
+
+    }
+
     public ClientDto findByPhone(String phone) {
         Optional<Client> clientEntityOptional = clientRepository.findByPhone(phone);
         if (clientEntityOptional.map(Client::getDto).isPresent()){
@@ -73,6 +89,17 @@ public class ClientService {
             return clientEntityOptional.map(Client::getDto).get();
         }else{
             logger.warn("Klient USER PHONE =>" + phone + " bo'lgan client ma'lumotlari topilmadi !");
+            return null;
+        }
+    }
+
+    public ClientDto findByIdAndIsAdmin(String id, Boolean isAdmin) {
+        Optional<Client> clientEntityOptional = clientRepository.findByIdAndIsAdmin(id,isAdmin);
+        if (clientEntityOptional.map(Client::getDto).isPresent()){
+            logger.info("Klient Admin Id =>" + id + " bo'lgan admin ma'lumotlari olindi !");
+            return clientEntityOptional.map(Client::getDto).get();
+        }else{
+            logger.warn("Klient Admin Id =>" + id + " bo'lgan client ma'lumotlari topilmadi !");
             return null;
         }
     }
@@ -130,6 +157,15 @@ public class ClientService {
             return clientEntity.getDto();
         }
         return null;
+    }
+
+    public String findAllByIsAdmin(Boolean isAdmin){
+        List<Client> adminList = clientRepository.findAllByIsAdmin(isAdmin);
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < adminList.size(); i++) {
+            result.append(adminList.get(i).getId() + ". " + adminList.get(i).getUsername() + "\n" );
+        }
+        return result.toString();
     }
 
 }

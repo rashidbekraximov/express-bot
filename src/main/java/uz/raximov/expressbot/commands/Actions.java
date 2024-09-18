@@ -7,7 +7,11 @@ public final class Actions {
 
 
     public static final String ADMIN = "action:admin-menu";
+    public static final String ADMIN_LIST = "action:admin-list";
+    public static final String REQUEST_ADMIN_ID = "action:admin-list";
     public static final String ADD_ADMIN = "action:add-admin";
+    public static final String DELETE_ADMIN = "action:delete-admin";
+    public static final String DELETE_ADMIN_KEYBOARD = "action:deleteAdminKeyboard";
     public static final String ADMIN_ADD_ORDER = "action:admin-add-order";
     public static final String REQUEST_ORDER_PHOTO_ACTION = "action:request-order-photo";
     public static final String REQUEST_ORDER_COUNT_ACTION = "action:request-order-count";

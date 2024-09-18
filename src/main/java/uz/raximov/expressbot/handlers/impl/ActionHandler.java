@@ -8,6 +8,7 @@ import uz.raximov.expressbot.commands.Actions;
 import uz.raximov.expressbot.commands.impl.Commands;
 import uz.raximov.expressbot.commands.impl.ComplaintCommand;
 import uz.raximov.expressbot.commands.impl.GlobalRequestCommand;
+import uz.raximov.expressbot.commands.impl.admin.AdminInfoCommand;
 import uz.raximov.expressbot.commands.impl.admin.CheckUserCommand;
 import uz.raximov.expressbot.dto.ClientActionDto;
 import uz.raximov.expressbot.dto.MessageSend;
@@ -32,6 +33,8 @@ class ActionHandler implements Handler<Message> {
 
     private final TelegramService telegramService;
 
+    private final AdminInfoCommand adminInfoCommand;
+
     @Transactional
     @Override
     public void handle(Message message) {
@@ -40,13 +43,19 @@ class ActionHandler implements Handler<Message> {
         boolean isAdmin = true;
         ClientActionDto action = clientActionService.findLastActionByChatId(chatId);
 
-        //TODO Currency Conversation Value Handle
+        //TODO Request phone number handler
         if (Objects.equals(action.getAction(), Actions.ADD_ADMIN) && action.getClient() != null) {
             if (PhoneNumberValidator.isValidPhoneNumber(text)){
                 checkUserCommand.execute(chatId,text,null,isAdmin);
             }else{
                 complaintCommand.execute(chatId, isAdmin);
             }
+            return;
+        }
+
+        // TODO Request Admin Id Handler
+        if (Objects.equals(action.getAction(), Actions.REQUEST_ADMIN_ID) && action.getClient() != null) {
+            adminInfoCommand.execute(chatId,message.getText(),null,isAdmin);
             return;
         }
 

@@ -29,7 +29,7 @@ public class BackCommand implements Command<Message> {
     @Override
     public void execute(Message message, Boolean isAdmin) {
         Long chatId = message.getChatId();
-        String text  = message.getText();
+        String text = message.getText();
         ClientActionDto action = clientActionService.findLastActionByChatId(chatId);
         if (action == null) {
             backAll(chatId, isAdmin);
@@ -51,11 +51,29 @@ public class BackCommand implements Command<Message> {
             return;
         }
 
-        backAll(chatId,isAdmin);
+        if (Objects.equals(action.getAction(), Actions.ADD_ADMIN) && action.getClient() != null) {
+            clientActionService.saveAction(Actions.ADMIN, chatId, action.getClient().getId());
+            adminCommand.execute(chatId, isAdmin);
+            return;
+        }
+
+        if (Objects.equals(action.getAction(), Actions.ADMIN_LIST) && action.getClient() != null) {
+            clientActionService.saveAction(Actions.ADMIN, chatId, action.getClient().getId());
+            adminCommand.execute(chatId, isAdmin);
+            return;
+        }
+
+        if (Objects.equals(action.getAction(), Actions.REQUEST_ADMIN_ID) && action.getClient() != null) {
+            clientActionService.saveAction(Actions.ADMIN, chatId, action.getClient().getId());
+            adminCommand.execute(chatId, isAdmin);
+            return;
+        }
+
+        backAll(chatId, isAdmin);
     }
 
-    private void backAll(Long chatId,Boolean isAdmin) {
-        generalCommand.execute(chatId,isAdmin);
+    private void backAll(Long chatId, Boolean isAdmin) {
+        generalCommand.execute(chatId, isAdmin);
         return;
     }
 }
