@@ -551,7 +551,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="domain-class-diagram" id="mql5I4AHV_EOIbO-FXmZ">
-    <mxGraphModel dx="2426" dy="1126" grid="0" gridSize="10" guides="0" tooltips="1" connect="0" arrows="0" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4003" dy="2060" grid="0" gridSize="10" guides="0" tooltips="1" connect="0" arrows="0" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="QaSKw-nrApPyZHBpUXGP-0" />
         <mxCell id="QaSKw-nrApPyZHBpUXGP-1" parent="QaSKw-nrApPyZHBpUXGP-0" />
